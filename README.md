@@ -1,58 +1,116 @@
-## Project: Build a Traffic Sign Recognition Program
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+# **Traffic Sign Recognition** 
 
-Overview
----
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to classify traffic signs. You will train and validate a model so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). After the model is trained, you will then try out your model on images of German traffic signs that you find on the web.
+## Writeup
 
-We have included an Ipython notebook that contains further instructions 
-and starter code. Be sure to download the [Ipython notebook](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb). 
 
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
+**Build a Traffic Sign Recognition Project**
 
-To meet specifications, the project will require submitting three files: 
-* the Ipython notebook with the code
-* the code exported as an html file
-* a writeup report either as a markdown or pdf file 
-
-Creating a Great Writeup
----
-A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/481/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
-
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
-
-The Project
----
 The goals / steps of this project are the following:
-* Load the data set
+* Load the data set (see below for links to the project data set)
 * Explore, summarize and visualize the data set
 * Design, train and test a model architecture
 * Use the model to make predictions on new images
 * Analyze the softmax probabilities of the new images
 * Summarize the results with a written report
 
-### Dependencies
-This lab requires:
+[//]: # (Image References)
 
-* [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
+[image1]: ./Output/1.PNG "Visualization"
+[image2]: ./Output/2.PNG "New Images"
+[image3]: ./Output/3.PNG "Classification for new images"
+[image4]: ./Output/4.PNG "Accuracy for new images"
+[image5]: ./Output/5.PNG "Top five classification for new images"
+[image6]: ./Output/samples.png "All labels"
 
-The lab environment can be created with CarND Term1 Starter Kit. Click [here](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) for the details.
+### Data Set Summary & Exploration
 
-### Dataset and Repository
+#### 1. Provide a basic summary of the data set. In the code, the analysis should be done using python, numpy and/or pandas methods rather than hardcoding results manually.
 
-1. Download the data set. The classroom has a link to the data set in the "Project Instructions" content. This is a pickled dataset in which we've already resized the images to 32x32. It contains a training, validation and test set.
-2. Clone the project, which contains the Ipython notebook and the writeup template.
-```sh
-git clone https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project
-cd CarND-Traffic-Sign-Classifier-Project
-jupyter notebook Traffic_Sign_Classifier.ipynb
-```
+I used the pandas library to calculate summary statistics of the traffic
+signs data set:
 
-### Requirements for Submission
-Follow the instructions in the `Traffic_Sign_Classifier.ipynb` notebook and write the project report using the writeup template as a guide, `writeup_template.md`. Submit the project code and writeup document.
+* The size of training set is ?
+* The size of test set is ?
+* The shape of a traffic sign image is ?
+* The number of unique classes/labels in the data set is ?
+![alt text][image1]
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+#### 2. Include an exploratory visualization of the dataset.
 
+Here is an exploratory visualization of the data set.
+
+![alt text][image6]
+
+### Design and Test a Model Architecture
+
+#### 1. Pre-process images
+
+###### Shuffle arrays or sparse matrices in a consistent way
+X_train, y_train = shuffle(X_train, y_train)
+
+###### Split arrays or matrices into random train and test subsets
+X_train, X_valid, y_train, y_valid = train_test_split(X_train, y_train, test_size=0.2, random_state=0)
+
+###### Normalizes the data between 0.1 and 0.9 instead of 0 to 255    
+def normalize(data):
+    return data / 255 * 0.8 + 0.1
+    
+#### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+
+My final model consisted of the following layers:
+
+| Layer         		|     Description	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Input         		| 32x32x3 RGB image   							| 
+| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x6 	|
+| RELU					|												|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x6 					|
+| Convolution 5x5	    | 1x1 stride, valid padding, outputs 10x10x16  	|
+| RELU					|												|
+| Max pooling	      	| 2x2 stride,  outputs 5x5x16 					|
+| Fully connected		| Input 400, output 120      					|
+| RELU					|												|
+| Fully connected		| Input 120, output 84      					|
+| RELU					|												|
+| Fully connected		| Input 84, output 43       					|
+
+#### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
+
+To train the model, I used an 
+EPOCHS = 20
+BATCH_SIZE = 128
+Leaning rate = 0.001.
+As an optimizer I used tf.train.AdamOptimizer(learning_rate = rate) which is pre-defined function, to use this optimizer 
+First, I found cross_entropy using tf.nn.softmax_cross_entropy_with_logits function, then followed by loss_operation using tf.reduce_mean(cross_entropy).
+
+My final model result was:
+
+* validation set accuracy of 0.973 
+
+### Test a Model on New Images
+
+#### 1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
+ ![alt text][image2] 
+ 
+ #### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
+
+Here are the results of the prediction:
+
+ ![alt text][image3] 
+ 
+ The model was able to correctly guess 3 of the 5 traffic signs, which gives an accuracy of 60%.
+ ![alt text][image4] 
+ #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. 
+ As I have an accuracy of 60 %, the first and fifth one were failed to be labeled for prediction. Hence, it shows different label.
+ 
+ ![alt text][image5]
+ 
+ ### Conclusion
+ 
+Through this project I became familiar using TensorFlow and felt far easier to implement convolutional neural network. 
+Also, I got to know what factors can have an affect on the accuracy such as epochs, batch size, learning rate and so on.
+Even there are a lot of attributes which can affect the accuracy such as arranging model architecture.
+Finally, using the model I implemented and pre-defined functions such as tf.nn.softmax_cross_entropy_with_logits(labels=one_hot_y, logits=logits)
+loss_operation = tf.reduce_mean(cross_entropy)
+optimizer = tf.train.AdamOptimizer(learning_rate = rate)
+training_operation = optimizer.minimize(loss_operation) could do classification among many traffic signs.
