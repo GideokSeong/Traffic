@@ -102,7 +102,7 @@ Here are the results of the prediction:
  
  ![alt text][image4] 
  #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. 
-Only three images are correctly classified which means it does not look accurate perfectly. When you see the results, name called NewImages/5.jpg and NewImages/2.jpg are failed to be classified but other images are correctly classified. Images which is correctly classified showed 100 % classification about their image. To summarize, 3 out of 5 images are correctly classified, so final accuracy is 60 %.
+Only three images are correctly classified which means it does not look accurate perfectly. When you see the results, name called NewImages/5.jpg and NewImages/2.jpg are failed to be classified but other images are correctly classified. Images which are correctly classified showed 100 % classification about their image. To summarize, 3 out of 5 images are correctly classified, so final accuracy is 60 %.
 
  ![alt text][image5]
  
